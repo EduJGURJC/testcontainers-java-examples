@@ -24,6 +24,8 @@ public class SeleniumContainerTest {
     @Test
     public void simplePlainSeleniumTest() {
         RemoteWebDriver driver = chrome.getWebDriver();
+        
+        System.out.println(chrome.getContainerIpAddress());
 
         driver.get("https://wikipedia.org");
         WebElement searchInput = driver.findElementByName("search");
