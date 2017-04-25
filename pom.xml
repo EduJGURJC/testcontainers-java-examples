@@ -6,11 +6,7 @@
     <artifactId>testcontainers-java-examples</artifactId>
     <version>NOVERSION</version>
     <modules>
-        <module>redis-backed-cache</module>
-        <module>disque-job-queue</module>
         <module>selenium-container</module>
-        <module>spring-boot</module>
-        <module>linked-container</module>
     </modules>
 
     <packaging>pom</packaging>
