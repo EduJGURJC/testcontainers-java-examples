@@ -6,6 +6,8 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testcontainers.containers.BrowserWebDriverContainer;
 
 import java.io.File;
+import java.io.IOException;
+import java.lang.ProcessBuilder.Redirect;
 
 import static org.rnorth.visibleassertions.VisibleAssertions.assertTrue;
 import static org.testcontainers.containers.BrowserWebDriverContainer.VncRecordingMode.RECORD_ALL;
@@ -18,15 +20,15 @@ public class SeleniumContainerTest {
     @Rule
     public BrowserWebDriverContainer chrome = (BrowserWebDriverContainer) new BrowserWebDriverContainer()
                                                     .withDesiredCapabilities(DesiredCapabilities.chrome())
-                                                    .withRecordingMode(RECORD_ALL, new File("target"))
+//                                                    .withRecordingMode(RECORD_ALL, new File("target"))
                                                     .withEnv("DOCKER_HOST", "tcp://172.17.0.1:2376");
 
     @Test
     public void simplePlainSeleniumTest() {
         RemoteWebDriver driver = chrome.getWebDriver();
+        		
+        Process p = runVnc();
         
-        System.out.println(chrome.getContainerIpAddress());
-
         driver.get("https://wikipedia.org");
         WebElement searchInput = driver.findElementByName("search");
 
@@ -41,6 +43,32 @@ public class SeleniumContainerTest {
                 .anyMatch(element -> element.getText().contains("meme"));
 
         assertTrue("The word 'meme' is found on a page about rickrolling", expectedTextFound);
-       
+        
+        p.destroy();
+    }
+    
+    public String getVncIp(){
+    	String[] vncAddress = chrome.getVncAddress().split("@");
+    	return  vncAddress[1];
+    }
+    
+    public Process runVnc(){
+    	Process p = null;
+        String vncIp = getVncIp();
+		String pass = chrome.getPassword();
+		
+		try {			
+			ProcessBuilder pb = new ProcessBuilder("/bin/bash", System.getProperty("user.dir")+"/noVNC/utils/launch.sh", "--vnc", vncIp);
+			pb.redirectOutput(Redirect.INHERIT);
+			pb.redirectError(Redirect.INHERIT);
+			p = pb.start();
+			
+			Thread.sleep(8000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return p;
     }
 }
