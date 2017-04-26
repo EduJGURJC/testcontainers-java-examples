@@ -65,14 +65,16 @@ public class SeleniumContainerTest {
 			pb.redirectError(Redirect.INHERIT);
 			p = pb.start();
 
-			Desktop.getDesktop().browse(
-					new URL("http://localhost:6080/vnc.html?host=localhost&port=6080&autoconnect=true&password=" + pass)							.toURI());
+			try{
+				Desktop.getDesktop().browse(
+						new URL("http://localhost:6080/vnc.html?host=localhost&port=6080&autoconnect=true&password=" + pass).toURI());	
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
 		return p;
