@@ -46,13 +46,7 @@ public class SeleniumContainerTest {
                 .anyMatch(element -> element.getText().contains("meme"));
 
         assertTrue("The word 'meme' is found on a page about rickrolling", expectedTextFound);
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-        p.destroy();
+        exitVnc(p);
     }
     
     public String getVncIp(){
@@ -81,5 +75,15 @@ public class SeleniumContainerTest {
 			e.printStackTrace();
 		}
 		return p;
+    }
+    
+    public void exitVnc(Process p){
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+        p.destroy();
     }
 }
