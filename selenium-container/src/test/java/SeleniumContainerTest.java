@@ -70,6 +70,8 @@ public class SeleniumContainerTest {
 						new URL("http://localhost:6080/vnc.html?host=localhost&port=6080&autoconnect=true&password=" + pass).toURI());	
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
+			} finally {
+				
 			}
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
