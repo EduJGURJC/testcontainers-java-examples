@@ -13,7 +13,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import static org.rnorth.visibleassertions.VisibleAssertions.assertTrue;
-import static org.testcontainers.containers.BrowserWebDriverContainer.VncRecordingMode.RECORD_ALL;
+import static org.testcontainers.containers.BrowserWebDriverContainer.VncRecordingMode.*;
 
 /**
  * Simple example of plain Selenium usage.
@@ -23,6 +23,7 @@ public class SeleniumContainerTest {
 	@Rule
 	public BrowserWebDriverContainer chrome = (BrowserWebDriverContainer) new BrowserWebDriverContainer()
 																	.withDesiredCapabilities(DesiredCapabilities.chrome())
+																	.withRecordingMode(SKIP, null)
 																	// .withRecordingMode(RECORD_ALL, new File("target"))
 																	.withEnv("DOCKER_HOST", "tcp://172.17.0.1:2376");
 
