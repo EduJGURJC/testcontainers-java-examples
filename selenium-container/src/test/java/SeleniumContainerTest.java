@@ -5,9 +5,12 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testcontainers.containers.BrowserWebDriverContainer;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import static org.rnorth.visibleassertions.VisibleAssertions.assertTrue;
 import static org.testcontainers.containers.BrowserWebDriverContainer.VncRecordingMode.RECORD_ALL;
@@ -43,7 +46,12 @@ public class SeleniumContainerTest {
                 .anyMatch(element -> element.getText().contains("meme"));
 
         assertTrue("The word 'meme' is found on a page about rickrolling", expectedTextFound);
-        
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
         p.destroy();
     }
     
@@ -63,10 +71,13 @@ public class SeleniumContainerTest {
 			pb.redirectError(Redirect.INHERIT);
 			p = pb.start();
 			
-			Thread.sleep(8000);
+		    Desktop.getDesktop().browse(new URL("http://localhost:6080/vnc.html?host=localhost&port=6080&password=secret&autoconnect=true").toURI());
+			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
 		return p;
