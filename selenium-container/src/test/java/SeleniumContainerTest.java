@@ -6,8 +6,12 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testcontainers.containers.BrowserWebDriverContainer;
 
 import java.awt.Desktop;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.lang.ProcessBuilder.Redirect;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -22,10 +26,9 @@ public class SeleniumContainerTest {
 
 	@Rule
 	public BrowserWebDriverContainer chrome = (BrowserWebDriverContainer) new BrowserWebDriverContainer()
-																	.withDesiredCapabilities(DesiredCapabilities.chrome())
-																	.withRecordingMode(SKIP, null)
-																	// .withRecordingMode(RECORD_ALL, new File("target"))
-																	.withEnv("DOCKER_HOST", "tcp://172.17.0.1:2376");
+			.withDesiredCapabilities(DesiredCapabilities.chrome()).withRecordingMode(SKIP, null)
+			// .withRecordingMode(RECORD_ALL, new File("target"))
+			.withEnv("DOCKER_HOST", "tcp://172.17.0.1:2376");
 
 	@Test
 	public void simplePlainSeleniumTest() {
@@ -60,17 +63,20 @@ public class SeleniumContainerTest {
 		String pass = chrome.getPassword();
 
 		try {
-			ProcessBuilder pb = new ProcessBuilder("/bin/bash", System.getProperty("user.dir") + "/noVNC/utils/launch.sh", "--vnc", vncIp);
+			ProcessBuilder pb = new ProcessBuilder("/bin/bash",
+					System.getProperty("user.dir") + "/noVNC/utils/launch.sh", "--vnc", vncIp);
 			pb.redirectOutput(Redirect.INHERIT);
 			pb.redirectError(Redirect.INHERIT);
 			p = pb.start();
 
-			try{
-				Desktop.getDesktop().browse(
-						new URL("http://localhost:6080/vnc.html?host=localhost&port=6080&autoconnect=true&password=" + pass).toURI());	
+			String url = "http://localhost:6080/vnc.html?host=localhost&port=6080&autoconnect=true&password=" + pass;
+			try {
+				Desktop.getDesktop().browse(new URL(url).toURI());
 			} catch (Exception e) {
 				e.printStackTrace();
-			} 
+			}			
+			writeFile("/resources/url.txt", url);
+
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -88,5 +94,19 @@ public class SeleniumContainerTest {
 		}
 
 		p.destroy();
+	}
+
+	public void writeFile(String path, String content) {
+		Writer writer = null;
+		try {
+			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), "utf-8"));
+			writer.write(content);
+		} catch (IOException ex) {
+		} finally {
+			try {
+				writer.close();
+			} catch (Exception ex) {
+			}
+		}
 	}
 }
