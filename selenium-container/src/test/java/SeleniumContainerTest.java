@@ -20,52 +20,52 @@ import static org.testcontainers.containers.BrowserWebDriverContainer.VncRecordi
  */
 public class SeleniumContainerTest {
 
-    @Rule
-    public BrowserWebDriverContainer chrome = (BrowserWebDriverContainer) new BrowserWebDriverContainer()
-                                                    .withDesiredCapabilities(DesiredCapabilities.chrome())
-//                                                    .withRecordingMode(RECORD_ALL, new File("target"))
-                                                    .withEnv("DOCKER_HOST", "tcp://172.17.0.1:2376");
+	@Rule
+	public BrowserWebDriverContainer chrome = (BrowserWebDriverContainer) new BrowserWebDriverContainer()
+																	.withDesiredCapabilities(DesiredCapabilities.chrome())
+																	// .withRecordingMode(RECORD_ALL, new File("target"))
+																	.withEnv("DOCKER_HOST", "tcp://172.17.0.1:2376");
 
-    @Test
-    public void simplePlainSeleniumTest() {
-        RemoteWebDriver driver = chrome.getWebDriver();
-        		
-        Process p = runVnc();
-        
-        driver.get("https://wikipedia.org");
-        WebElement searchInput = driver.findElementByName("search");
+	@Test
+	public void simplePlainSeleniumTest() {
+		RemoteWebDriver driver = chrome.getWebDriver();
 
-        searchInput.sendKeys("Rick Astley");
-        searchInput.submit();
+		Process p = runVnc();
 
-        WebElement otherPage = driver.findElementByLinkText("Rickrolling");
-        otherPage.click();
+		driver.get("https://wikipedia.org");
+		WebElement searchInput = driver.findElementByName("search");
 
-        boolean expectedTextFound = driver.findElementsByCssSelector("p")
-                .stream()
-                .anyMatch(element -> element.getText().contains("meme"));
+		searchInput.sendKeys("Rick Astley");
+		searchInput.submit();
 
-        assertTrue("The word 'meme' is found on a page about rickrolling", expectedTextFound);
-        exitVnc(p);
-    }
-    
-    public String getVncIp(){
-    	String[] vncAddress = chrome.getVncAddress().split("@");
-    	return  vncAddress[1];
-    }
-    
-    public Process runVnc(){
-    	Process p = null;
-        String vncIp = getVncIp();
+		WebElement otherPage = driver.findElementByLinkText("Rickrolling");
+		otherPage.click();
+
+		boolean expectedTextFound = driver.findElementsByCssSelector("p").stream()
+				.anyMatch(element -> element.getText().contains("meme"));
+
+		assertTrue("The word 'meme' is found on a page about rickrolling", expectedTextFound);
+		exitVnc(p);
+	}
+
+	public String getVncIp() {
+		String[] vncAddress = chrome.getVncAddress().split("@");
+		return vncAddress[1];
+	}
+
+	public Process runVnc() {
+		Process p = null;
+		String vncIp = getVncIp();
 		String pass = chrome.getPassword();
-		
-		try {			
-			ProcessBuilder pb = new ProcessBuilder("/bin/bash", System.getProperty("user.dir")+"/noVNC/utils/launch.sh", "--vnc", vncIp);
+
+		try {
+			ProcessBuilder pb = new ProcessBuilder("/bin/bash", System.getProperty("user.dir") + "/noVNC/utils/launch.sh", "--vnc", vncIp);
 			pb.redirectOutput(Redirect.INHERIT);
 			pb.redirectError(Redirect.INHERIT);
 			p = pb.start();
-			
-		    Desktop.getDesktop().browse(new URL("http://localhost:6080/vnc.html?host=localhost&port=6080&password=secret&autoconnect=true").toURI());
+
+			Desktop.getDesktop().browse(
+					new URL("http://localhost:6080/vnc.html?host=localhost&port=6080&autoconnect=true&password=" + pass)							.toURI());
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -75,15 +75,15 @@ public class SeleniumContainerTest {
 			e.printStackTrace();
 		}
 		return p;
-    }
-    
-    public void exitVnc(Process p){
+	}
+
+	public void exitVnc(Process p) {
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 
-        p.destroy();
-    }
+		p.destroy();
+	}
 }
