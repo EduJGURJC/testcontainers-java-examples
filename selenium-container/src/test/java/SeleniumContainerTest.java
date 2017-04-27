@@ -77,7 +77,14 @@ public class SeleniumContainerTest {
 				e.printStackTrace();
 			}		
 			
-			writeFile("/resources/url.txt", url);
+			try{
+				writeFile("/resources/url.txt", url);
+				System.out.println("OK: urlvnc");
+			}catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("ERR: urlvnc");
+			}
+			
 
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
