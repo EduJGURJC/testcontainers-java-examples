@@ -86,7 +86,7 @@ public class SeleniumContainerTest {
 			}
 			
 
-			Thread.sleep(2000);
+			Thread.sleep(9000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
