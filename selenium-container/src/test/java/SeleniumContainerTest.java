@@ -26,8 +26,9 @@ public class SeleniumContainerTest {
 
 	@Rule
 	public BrowserWebDriverContainer chrome = (BrowserWebDriverContainer) new BrowserWebDriverContainer()
-			.withDesiredCapabilities(DesiredCapabilities.chrome()).withRecordingMode(SKIP, null)
-			// .withRecordingMode(RECORD_ALL, new File("target"))
+			.withDesiredCapabilities(DesiredCapabilities.chrome())
+//			.withRecordingMode(SKIP, null)
+			 .withRecordingMode(RECORD_ALL, new File("target"))
 			.withEnv("DOCKER_HOST", "tcp://172.17.0.1:2376");
 
 	@Test
@@ -74,7 +75,8 @@ public class SeleniumContainerTest {
 				Desktop.getDesktop().browse(new URL(url).toURI());
 			} catch (Exception e) {
 				e.printStackTrace();
-			}			
+			}		
+			
 			writeFile("/resources/url.txt", url);
 
 			Thread.sleep(2000);
@@ -101,11 +103,13 @@ public class SeleniumContainerTest {
 		try {
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), "utf-8"));
 			writer.write(content);
-		} catch (IOException ex) {
+		} catch (IOException e) {
+//			e.printStackTrace();
 		} finally {
 			try {
 				writer.close();
-			} catch (Exception ex) {
+			} catch (Exception e) {
+//				e.printStackTrace();
 			}
 		}
 	}
