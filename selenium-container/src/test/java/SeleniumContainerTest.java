@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.ProcessBuilder.Redirect;
+import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -35,7 +36,7 @@ public class SeleniumContainerTest {
 	public void simplePlainSeleniumTest() {
 		RemoteWebDriver driver = chrome.getWebDriver();
 
-		Process p = runVnc();
+		Process p = runNoVncClient();
 
 		driver.get("https://wikipedia.org");
 		WebElement searchInput = driver.findElementByName("search");
@@ -58,7 +59,7 @@ public class SeleniumContainerTest {
 		return vncAddress[1];
 	}
 
-	public Process runVnc() {
+	public Process runNoVncClient() {
 		Process p = null;
 		String vncIp = getVncIp();
 		String pass = chrome.getPassword();
@@ -77,17 +78,9 @@ public class SeleniumContainerTest {
 				e.printStackTrace();
 			}		
 			
+			while(!validUrl(url)){System.out.println("waiting");}
 			System.out.println("urlvnc: "+ url);
 			
-//			try{
-//				writeFile("/resources/url.txt", url);
-//				System.out.println("OK: urlvnc");
-//			}catch (Exception e) {
-//				e.printStackTrace();
-//				System.out.println("ERR: urlvnc");
-//			}
-			
-
 			Thread.sleep(9000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -122,4 +115,17 @@ public class SeleniumContainerTest {
 			}
 		}
 	}
+	
+    public static boolean validUrl(String URLName){
+        try {
+            HttpURLConnection.setFollowRedirects(false);
+            HttpURLConnection con =  (HttpURLConnection) new URL(URLName).openConnection();
+            con.setRequestMethod("HEAD");
+            return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
