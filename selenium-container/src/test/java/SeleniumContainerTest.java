@@ -72,13 +72,14 @@ public class SeleniumContainerTest {
 			p = pb.start();
 
 			String url = "http://localhost:6080/vnc.html?host=localhost&port=6080&autoconnect=true&password=" + pass;
+			String paco_url = "http://192.168.99.101:6080/vnc.html?host=192.168.99.101&port=6080&autoconnect=true&password=" + pass;
 			try {
 				Desktop.getDesktop().browse(new URL(url).toURI());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}		
 			
-//			while(!validUrl(url)){System.out.println("Waiting for loading noVNC client");}
+			while(!validUrl(url) && !validUrl(paco_url)){System.out.println("Waiting for loading noVNC client");}
 			System.out.println("urlvnc: "+ url);
 			
 			Thread.sleep(9000);
