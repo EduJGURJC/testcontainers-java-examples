@@ -78,7 +78,7 @@ public class SeleniumContainerTest {
 //				e.printStackTrace();
 			}		
 			
-//			while(!validUrl(url)){System.out.println("Waiting for loading noVNC client");}
+			while(!validUrl(url)){System.out.println("Waiting for loading noVNC client");}
 			System.out.println("urlvnc: "+ url);
 			
 			Thread.sleep(9000);
@@ -120,8 +120,11 @@ public class SeleniumContainerTest {
         try {
             HttpURLConnection.setFollowRedirects(false);
             HttpURLConnection con =  (HttpURLConnection) new URL(URLName).openConnection();
-            con.setRequestMethod("HEAD");
-            return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
+            con.setRequestMethod("GET");
+            con.connect();
+
+            int code = con.getResponseCode();
+            return code>=200 && code <= 209;
         }
         catch (Exception e) {
             e.printStackTrace();
