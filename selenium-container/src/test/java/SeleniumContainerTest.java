@@ -71,7 +71,7 @@ public class SeleniumContainerTest {
 			pb.redirectError(Redirect.INHERIT);
 			p = pb.start();
 
-			String url = "http://localhost:6080/vnc.html?host=localhost&port=6080&autoconnect=true&password=" + pass;
+			String url = "http://localhost:6080/vnc.html?host=localhost&port=6080&resize=scale&autoconnect=true&password=" + pass;
 			try {
 				Desktop.getDesktop().browse(new URL(url).toURI());
 			} catch (Exception e) {
@@ -120,11 +120,8 @@ public class SeleniumContainerTest {
         try {
             HttpURLConnection.setFollowRedirects(false);
             HttpURLConnection con =  (HttpURLConnection) new URL(URLName).openConnection();
-            con.setRequestMethod("GET");
-            con.connect();
-
-            int code = con.getResponseCode();
-            return code>=200 && code <= 209;
+            con.setRequestMethod("HEAD");
+            return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
         }
         catch (Exception e) {
             e.printStackTrace();
