@@ -120,7 +120,7 @@ public class SeleniumContainerTest {
     public static boolean validUrl(String URLName){
         try {
             HttpURLConnection.setFollowRedirects(false);
-            HttpURLConnection con =  (HttpURLConnection) new URL("https://cors-it.herokuapp.com/?url="+URLName).openConnection();
+            HttpURLConnection con =  (HttpURLConnection) new URL(URLName).openConnection();
             con.setRequestMethod("HEAD");
             return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
         }
