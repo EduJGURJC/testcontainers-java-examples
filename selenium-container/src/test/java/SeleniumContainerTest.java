@@ -79,7 +79,7 @@ public class SeleniumContainerTest {
 //				e.printStackTrace();
 			}		
 			
-			while(!validUrl(url)){System.out.println("Waiting for loading noVNC client");}
+//			while(!validUrl(url)){System.out.println("Waiting for loading noVNC client");}
 			System.out.println("urlvnc: "+ url);
 			
 			Thread.sleep(9000);
