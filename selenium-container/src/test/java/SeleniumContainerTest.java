@@ -67,6 +67,7 @@ public class SeleniumContainerTest {
 		try {
 			ProcessBuilder pb = new ProcessBuilder("/bin/bash",
 					System.getProperty("user.dir") + "/noVNC/utils/launch.sh", "--vnc", vncIp);
+
 			pb.redirectOutput(Redirect.INHERIT);
 			pb.redirectError(Redirect.INHERIT);
 			p = pb.start();
@@ -78,7 +79,7 @@ public class SeleniumContainerTest {
 //				e.printStackTrace();
 			}		
 			
-//			while(!validUrl(url)){System.out.println("Waiting for loading noVNC client");}
+			while(!validUrl(url)){System.out.println("Waiting for loading noVNC client");}
 			System.out.println("urlvnc: "+ url);
 			
 			Thread.sleep(9000);
@@ -119,7 +120,7 @@ public class SeleniumContainerTest {
     public static boolean validUrl(String URLName){
         try {
             HttpURLConnection.setFollowRedirects(false);
-            HttpURLConnection con =  (HttpURLConnection) new URL(URLName).openConnection();
+            HttpURLConnection con =  (HttpURLConnection) new URL("https://cors-it.herokuapp.com/?url="+URLName).openConnection();
             con.setRequestMethod("HEAD");
             return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
         }
