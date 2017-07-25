@@ -28,15 +28,17 @@ public class SeleniumContainerTest {
 	@Rule
 	public BrowserWebDriverContainer chrome = (BrowserWebDriverContainer) new BrowserWebDriverContainer()
 			.withDesiredCapabilities(DesiredCapabilities.chrome())
-//			.withRecordingMode(SKIP, null)
-			 .withRecordingMode(RECORD_ALL, new File("target"))
-			.withEnv("DOCKER_HOST", "tcp://172.17.0.1:2376");
+			.withRecordingMode(SKIP, null)
+//			 .withRecordingMode(RECORD_ALL, new File("target"))
+//			.withEnv("DOCKER_HOST", "tcp://172.17.0.1:2376");
+			.withEnv("DOCKER_HOST", System.getenv("DOCKER_HOST"));
+
 
 	@Test
 	public void simplePlainSeleniumTest() {
 		RemoteWebDriver driver = chrome.getWebDriver();
 
-		Process p = runNoVncClient();
+	//	Process p = runNoVncClient();
 
 		driver.get("https://wikipedia.org");
 		WebElement searchInput = driver.findElementByName("search");
@@ -51,7 +53,7 @@ public class SeleniumContainerTest {
 				.anyMatch(element -> element.getText().contains("meme"));
 
 		assertTrue("The word 'meme' is found on a page about rickrolling", expectedTextFound);
-		exitVnc(p);
+		//exitVnc(p);
 	}
 
 	public String getVncIp() {
